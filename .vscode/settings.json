@@ -1,0 +1,25 @@
+{
+  "[python]": {
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "always"
+    },
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  },
+  "flake8.args": [
+    "--config=${workspaceFolder}/setup.cfg"
+  ],
+  "flake8.cwd": "${workspaceFolder}",
+  "flake8.importStrategy": "fromEnvironment",
+  "mypy.configFile": "pyproject.toml",
+  "mypy.enabled": true,
+  "mypy.runUsingActiveInterpreter": true,
+  "python.analysis.importFormat": "relative",
+  "python.analysis.inlayHints.functionReturnTypes": false,
+  "python.analysis.inlayHints.pytestParameters": false,
+  "python.analysis.inlayHints.variableTypes": false,
+  "python.missingPackage.severity": "Error",
+  "python.terminal.activateEnvInCurrentTerminal": true,
+  "ruff.nativeServer": "auto"
+}

@@ -1,0 +1,48 @@
+[project]
+name = "python-uv-template"
+version = "0.1.0"
+description = "Python template with uv"
+authors = [{ name = "Felix Weiss", email = "weiss@soundinnovationlab.com" }, { name = "Siamend Darwesh", email = "darwesh@soundinnovationlab.com"} ]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "pydantic>=2.11.1",
+]
+
+[dependency-groups]
+dev = [
+    "flake8>=7.2.0",
+    "flake8-quotes>=3.4.0",
+    "mypy>=1.15.0",
+    "pre-commit>=4.2.0",
+    "ruff>=0.11.2",
+    "wemake-python-styleguide>=1.1.0",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501", # line too long, handled by black
+    "B008", # do not perform function calls in argument defaults
+    "C901", # too complex
+    "W191", # indentation contains tabs
+]
+
+[tool.mypy]
+exclude = ['venv', '.venv']
+
+[tool.autohooks]
+mode = "pythonpath"
+pre-commit = []
+
+[tool.bandit]
+skips = []
