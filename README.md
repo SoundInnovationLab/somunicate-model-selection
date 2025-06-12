@@ -1,3 +1,17 @@
+# Overview
+
+This repository contains code for performing model selection for a
+regression model that predicts perceived semantic expression from the
+acoustic topic features of functional sounds. The goal is to identify the
+best model configuration (hyperparameters). We explore two learning
+paradigms (Deep Neural Networks and Random Forests), different output
+configurations (Multioutput and Singleoutput) and the inclusion of
+additional input features (meatdata). The process involves hyperparameter
+grid search with k-fold cross-validation, evaluation of grid search
+results, and retraining/evaluation of the best model.
+
+# How to Use
+
 ## Preqrequisites
 
 Make sure you have
@@ -182,7 +196,7 @@ uv build
 docker build .
 ```
 
-## License
+# License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE)
 file for details.
