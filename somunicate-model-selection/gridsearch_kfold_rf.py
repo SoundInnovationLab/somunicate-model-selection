@@ -2,6 +2,7 @@ import argparse
 import itertools
 import os
 import warnings
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -11,7 +12,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import make_scorer, mean_squared_error
 from sklearn.model_selection import StratifiedKFold
 from utils.gridsearch import get_pseudo_classes, get_stratified_array_train_test_split
-from utils.utils import load_global_variables
+from utils.loading import load_global_variables
 
 warnings.filterwarnings("ignore")
 
@@ -152,8 +153,11 @@ hyperparam_dict = {
     MAX_FEATURES: hyperparameter_grid.max_features,  # Added max_features for completeness
 }
 
-hyperparam_combinations = list(itertools.product(*hyperparam_dict.values()))
-
+hyperparam_combinations = list(
+    itertools.product(
+        *[hval for hval in hyperparam_dict.values() if isinstance(hval, Iterable)]
+    )
+)
 # stratified k-fold split needs the X and y for stratified splitting
 train_val_features = feature_data[train_indices]
 train_val_targets = target_data[train_indices]

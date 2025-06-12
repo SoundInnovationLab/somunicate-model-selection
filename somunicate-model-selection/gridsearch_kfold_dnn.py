@@ -23,7 +23,7 @@ from utils.gridsearch import (
     get_single_target_tensor,
 )
 from utils.gridsearch_tensor import get_stratified_train_test_split
-from utils.utils import load_global_variables
+from utils.loading import load_global_variables
 
 torch.set_float32_matmul_precision("medium")
 

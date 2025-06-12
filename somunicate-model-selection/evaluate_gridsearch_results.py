@@ -1,6 +1,7 @@
 import argparse
 import itertools
 import os
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 
 from utils.evaluation import (
@@ -8,7 +9,7 @@ from utils.evaluation import (
     find_best_hparams,
     save_best_hparams_df,
 )
-from utils.utils import load_df
+from utils.loading import load_df
 
 
 @dataclass
@@ -101,8 +102,11 @@ elif args.learner == "rf":
         MAX_FEATURES: hyperparameter_grid.max_features,
     }
 
-# for random forest
-hyperparam_combinations = list(itertools.product(*hyperparam_dict.values()))
+hyperparam_combinations = list(
+    itertools.product(
+        *[hval for hval in hyperparam_dict.values() if isinstance(hval, Iterable)]
+    )
+)
 log_dir = args.log_dir
 
 # go through all subfolders and search for file called "results.json"

@@ -10,7 +10,7 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import make_scorer, mean_squared_error
 from utils.gridsearch import get_stratified_array_train_test_split
-from utils.utils import load_global_variables
+from utils.loading import load_global_variables
 
 logging.basicConfig(
     level=logging.INFO,
