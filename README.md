@@ -1,3 +1,28 @@
+# Code Supplement for Submission of TISMIR Research Article
+
+This repository provides the code supplement for the research article
+"Expanding MIR into new audio domains: Predicting Perceived Meaning of
+Functional Sounds using Unsupervised Feature Extraction and Ensemble
+Learning" submitted to "TISMIR - Transactions of the International Society
+for Music Information Retrieval".
+
+This repository contains code for performing model selection for a
+regression model that predicts perceived semantic expression from the
+acoustic topic features of functional sounds. The goal is to identify the
+best model configuration (hyperparameters). We explore two learning
+paradigms (Deep Neural Networks and Random Forests), different output
+configurations (Multioutput and Singleoutput) and the inclusion of
+additional input features (meatdata). The process involves hyperparameter
+grid search with k-fold cross-validation, evaluation of grid search
+results, and retraining/evaluation of the best model.
+
+Due to copyright restrictions, the original dataset used in the publication
+cannot be made publicly available. However, a dummy dataset with the same
+structure and number of samples as the original is provided in the `data/`
+directory to allow users to test and reproduce the code.
+
+# How to Use
+
 ## Preqrequisites
 
 Make sure you have
@@ -134,6 +159,8 @@ folder.
 
 ## Recommendations
 
+### Logging Directory Structure
+
 Since testing all possible model configrations and the whole process is
 very complex we recommend following a structure for the result logs like
 this (same structure with a different base for the best model trainings):
@@ -151,6 +178,21 @@ logs/gridsearch/
 Within those directories a folder for each model (e.g. "all" or
 "being_ready") will be created automatically.
 
+### Dataset
+
+Since the dataset is copyrighted and not publicly available, we provided a
+dummy dataset that can be used to test the scripts. The dummy dataset is
+located in the `´data/` directory. It contains the same structure and
+number of samples as the original dataset, but the values are randomly
+generated.
+
+To use another dataset, you can replace the path in the following files:
+
+- `somunicate-model-selection/gridsearch_kfold_dnn.py`
+- `somunicate-model-selection/gridsearch_kfold_rf.py`
+- `somunicate-model-selection/train_best_models_dnn.py`
+- `somunicate-model-selection/train_best_models_rf.py`
+
 ## Building the project
 
 ### Building a wheel
@@ -165,7 +207,7 @@ uv build
 docker build .
 ```
 
-## License
+# License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE)
 file for details.

@@ -3,7 +3,8 @@ import os
 from typing import Literal
 
 import pandas as pd
-from somunicate_model_selection.utils.dataframe import (
+
+from utils.dataframe import (
     _append_best_model,
     _create_new_row,
     _filter_dataframe,
@@ -29,7 +30,6 @@ def average_over_hparam_combinations(df, hyperparam_dict, mode):  # noqa: WPS210
         averaged_data.append(new_row)
 
     average_df = pd.DataFrame(averaged_data)
-    average_df = average_df.drop(columns=["val_loss", "val_r2"])
     return average_df
 
 
