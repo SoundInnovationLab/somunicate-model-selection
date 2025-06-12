@@ -1,6 +1,48 @@
 {
-    "target_list" : ["having_finished_successfully", "having_a_problem", "process_ongoing", "being_ready", "having_news", "being_empty", "shutting_down", "negative_warnings", "urgency_reminder", "encouraging_confirmations", "starting_prompts", "waiting_prompts", "sophistication", "positivity", "progressiveness", "dominance", "solidity", "purity", "playfulness"], 
-    "status_list" : ["having_finished_successfully", "having_a_problem", "process_ongoing", "being_ready", "having_news", "being_empty", "shutting_down"],
-    "appeal_list" : ["negative_warnings", "urgency_reminder", "encouraging_confirmations", "starting_prompts", "waiting_prompts"],
-    "brand_identity_list" : ["sophistication", "positivity", "progressiveness", "dominance", "solidity", "purity", "playfulness"]
+  "appeal_list": [
+    "negative_warnings",
+    "urgency_reminder",
+    "encouraging_confirmations",
+    "starting_prompts",
+    "waiting_prompts"
+  ],
+  "brand_identity_list": [
+    "sophistication",
+    "positivity",
+    "progressiveness",
+    "dominance",
+    "solidity",
+    "purity",
+    "playfulness"
+  ],
+  "status_list": [
+    "having_finished_successfully",
+    "having_a_problem",
+    "process_ongoing",
+    "being_ready",
+    "having_news",
+    "being_empty",
+    "shutting_down"
+  ],
+  "target_list": [
+    "having_finished_successfully",
+    "having_a_problem",
+    "process_ongoing",
+    "being_ready",
+    "having_news",
+    "being_empty",
+    "shutting_down",
+    "negative_warnings",
+    "urgency_reminder",
+    "encouraging_confirmations",
+    "starting_prompts",
+    "waiting_prompts",
+    "sophistication",
+    "positivity",
+    "progressiveness",
+    "dominance",
+    "solidity",
+    "purity",
+    "playfulness"
+  ]
 }

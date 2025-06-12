@@ -278,7 +278,7 @@ def get_single_target_tensor(target_tensor, target_index):
     return target_tensor
 
 
-def get_target_tensor(target_df, target_index: int = None):
+def get_target_tensor(target_df, target_index: int | None = None):
     target_data = torch.tensor(target_df.values, dtype=torch.float32)
     # only applies to "dimension" subset where only one target is used
     if target_index is not None:

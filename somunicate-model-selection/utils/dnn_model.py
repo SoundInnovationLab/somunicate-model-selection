@@ -13,9 +13,9 @@ class R2Score(Metric):
         self.add_state("y_true", default=torch.tensor([]), dist_reduce_fx=None)
         self.add_state("y_pred", default=torch.tensor([]), dist_reduce_fx=None)
 
-    def update(self, y_pred, y_true):
-        y_true = y_true.detach().cpu()
-        y_pred = y_pred.detach().cpu()
+    def update(self, y_pred: torch.Tensor, y_true: torch.Tensor):
+        y_true = y_true.detach().cpu().to(torch.float32)
+        y_pred = y_pred.detach().cpu().to(torch.float32)
         self.y_true = self.y_true.cpu()
         self.y_pred = self.y_pred.cpu()
         self.y_true = torch.cat((self.y_true, y_true))
@@ -39,7 +39,9 @@ class RMSEMetric(Metric):
         super().__init__()
         # Initialize accumulators for sum of squared errors and total number of samples
         self.add_state(
-            "sum_squared_error", default=torch.tensor(0.0), dist_reduce_fx="sum"
+            "sum_squared_error",
+            default=torch.tensor(0, dtype=torch.float32),
+            dist_reduce_fx="sum",
         )
         self.add_state("total_samples", default=torch.tensor(0), dist_reduce_fx="sum")
 
@@ -54,7 +56,7 @@ class RMSEMetric(Metric):
     def compute(self):
         if self.total_samples == 0:
             return torch.tensor(
-                0.0
+                0, dtype=torch.float32
             )  # To handle division by zero if no samples were added
 
         mse = self.sum_squared_error / self.total_samples

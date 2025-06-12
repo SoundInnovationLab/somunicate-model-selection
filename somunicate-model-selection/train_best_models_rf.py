@@ -1,15 +1,35 @@
 import argparse
 import json
+import logging
 import os
+from typing import Literal
 
 import joblib
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import make_scorer, mean_squared_error
-
 from utils.gridsearch import get_stratified_array_train_test_split
 from utils.utils import load_global_variables
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+DIMENSIONS = "dimensions"
+STATUS = "status"
+APPEAL = "appeal"
+BRAND_IDENTITY = "brand_identity"
+ALL = "all"
+
+ORIENT_RECORDS = "records"
+TARGET = "target"
+TARGET_LIST = "target_list"
+MAX_DEPTH = "max_depth"
+MAX_FEATURES = "max_features"
+
 
 global_variables = load_global_variables()
 
@@ -36,68 +56,61 @@ parser.add_argument(
 
 args = parser.parse_args()
 
+hparam_file = args.hparam_file
 try:
-    hyperparams = pd.read_json(args.hparam_file, orient="records").to_dict(
-        orient="records"
+    hyperparams = pd.read_json(hparam_file, orient=ORIENT_RECORDS).to_dict(
+        orient=ORIENT_RECORDS
     )[0]
-    # make sure 'max_depth' and 'n_estimators' have None if they are null or N an
-    for key, value in hyperparams.items():
-        if key == "max_depth" or key == "max_features":
-            # check for nan
-            if value != value:
-                print(key, value)
-                # set to None
-                hyperparams[key] = None
-                print(key, hyperparams[key])
-except (ValueError, FileNotFoundError) as e:
-    print(f"Could not read hyperparameter file {args.hparam_file}")
-    exit()
+except (ValueError, FileNotFoundError) as exc:
+    logger.error(f"Error loading hyperparameters: {exc}")
 
 
-if hyperparams["target"] in global_variables["target_list"]:
-    subset = "dimensions"
+for key in (MAX_DEPTH, MAX_FEATURES):
+    if key in hyperparams and pd.isna(hyperparams[key]):
+        hyperparams[key] = None
+
+if hyperparams[TARGET] in global_variables[TARGET_LIST]:
+    subset = DIMENSIONS
 else:
-    subset = hyperparams["target"]
+    subset = hyperparams[TARGET]
 # load data depending on subset
-data_df = pd.read_json("data/240918_median_data_3_features.json", orient="records")
-if subset == "dimensions" or subset == "all":
-    target_df = data_df[global_variables["target_list"]]
-elif subset == "status":
-    target_df = data_df[global_variables["status_list"]]
-elif subset == "appeal":
-    target_df = data_df[global_variables["appeal_list"]]
-elif subset == "brand_identity":
-    target_df = data_df[global_variables["brand_identity_list"]]
+data_df = pd.read_json("data/dummy_audio_dataset.json", orient=ORIENT_RECORDS)
+SubsetType = Literal["dimensions", "status", "appeal", "brand_identity", "all"]
+subset_mapping = {
+    "dimensions": global_variables[TARGET_LIST],
+    "status": global_variables["status_list"],
+    "appeal": global_variables["appeal_list"],
+    "brand_identity": global_variables["brand_identity_list"],
+    "all": global_variables[TARGET_LIST],
+}
 
+target_df = data_df[subset_mapping[subset]]
 target_data = target_df.values
 
 # only for 'dimensions' a single target tensor is predicted
 # target_name is used for logging so individual target names are needed
-if subset == "dimensions":
-    target_idx = global_variables["target_list"].index(hyperparams["target"])
-    target_name = global_variables["target_list"][target_idx]
+if subset == DIMENSIONS:
+    target_idx = global_variables[TARGET_LIST].index(hyperparams[TARGET])
+    target_name = global_variables[TARGET_LIST][target_idx]
     target_data = np.expand_dims(target_data[:, target_idx], axis=1)
 else:
     target_name = subset
 
 
 # get feature data
-feature_df = data_df.drop(columns=global_variables["target_list"]).drop(
-    columns=["sound"]
-)
+feature_df = data_df.drop(columns=global_variables[TARGET_LIST]).drop(columns=["sound"])
 # argparser has troubles with handling boolean arguments
 if args.include_industry == "False":
     industry_columns = [col for col in feature_df.columns if "topic" not in col]
     feature_df = feature_df.drop(columns=industry_columns)
 
 feature_data = feature_df.values
-print("Feature Shape: ", feature_data.shape, "\nTarget Shape: ", target_data.shape)
 
 result_folder = f"{args.log_folder}/{target_name}/"
 os.makedirs(result_folder, exist_ok=True)
 result_df = pd.DataFrame(
     columns=[
-        "target",
+        TARGET,
         "folds",
         "experiment_id",
         "test_loss",
@@ -113,8 +126,8 @@ train_indices, test_indices = get_stratified_array_train_test_split(
 )
 # save test indices to ensure all experiments are comparable
 test_indices_file = f"{result_folder}test_indices.json"
-with open(test_indices_file, "w") as f:
-    json.dump(test_indices.tolist(), f)
+with open(test_indices_file, "w") as test_indice_file:
+    json.dump(test_indices.tolist(), test_indice_file)
 
 train_features = feature_data[train_indices]
 train_targets = target_data[train_indices]
@@ -139,4 +152,4 @@ for e_idx in range(args.n_experiments):
     test_r2 = model.score(test_features, test_targets)
 
     result_df.loc[e_idx] = [target_name, args.n_folds, e_idx, test_loss, test_r2]
-    result_df.to_json(f"{result_folder}results.json", orient="records", indent=4)
+    result_df.to_json(f"{result_folder}results.json", orient=ORIENT_RECORDS, indent=4)

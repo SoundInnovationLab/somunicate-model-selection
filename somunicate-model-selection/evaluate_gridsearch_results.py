@@ -1,7 +1,7 @@
 import argparse
 import itertools
 import os
-from pathlib import Path
+from dataclasses import dataclass, field
 
 from utils.evaluation import (
     average_over_hparam_combinations,
@@ -9,6 +9,40 @@ from utils.evaluation import (
     save_best_hparams_df,
 )
 from utils.utils import load_df
+
+
+@dataclass
+class RFHyperparameterGrid:
+    n_estimators: list[int] = field(
+        default_factory=lambda: [
+            100,
+        ]
+    )
+    max_depth: list[int | None] = field(default_factory=lambda: [None])
+    min_samples_split: list[int] = field(default_factory=lambda: [2])
+    min_samples_leaf: list[int] = field(default_factory=lambda: [1, 2])
+    max_features: list[str | None] = field(default_factory=lambda: [None])
+
+
+@dataclass
+class DNNHyperparameterGrid:
+    start_lr: list[float] = field(default_factory=lambda: [0.001, 0.0001])
+    batch_size: list[int] = field(default_factory=lambda: [32])
+    batch_norm: list[bool] = field(default_factory=lambda: [False])
+    dropout: list[float] = field(default_factory=lambda: [0.5])
+    layer_config: list[list[int]] = field(default_factory=lambda: [[128, 256]])
+
+
+N_ESTIMATORS = "n_estimators"
+MAX_DEPTH = "max_depth"
+MIN_SAMPLES_SPLIT = "min_samples_split"
+MIN_SAMPLES_LEAF = "min_samples_leaf"
+MAX_FEATURES = "max_features"
+START_LR = "start_lr"
+BATCH_SIZE = "batch_size"
+BATCH_NORM = "batch_norm"
+DROPOUT = "dropout"
+LAYER_CONFIG = "layer_config"
 
 parser = argparse.ArgumentParser(description="Evaluate gridsearch results")
 parser.add_argument(
@@ -42,14 +76,13 @@ if args.learner == "dnn":
     #         [256, 128, 64, 32],
     #     ],
     # }
+    hyperparam_grid = DNNHyperparameterGrid()
     hyperparam_dict = {
-        "start_lr": [0.001, 0.0001],
-        "batch_size": [32],
-        "batch_norm": [False],
-        "dropout": [0.5],
-        "layer_config": [
-            [128, 256],
-        ],
+        START_LR: hyperparam_grid.start_lr,
+        BATCH_SIZE: hyperparam_grid.batch_size,
+        BATCH_NORM: hyperparam_grid.batch_norm,
+        DROPOUT: hyperparam_grid.dropout,
+        LAYER_CONFIG: hyperparam_grid.layer_config,
     }
 elif args.learner == "rf":
     # hyperparam_dict = {
@@ -59,28 +92,27 @@ elif args.learner == "rf":
     #     "min_samples_leaf": [1, 2, 4],
     #     "max_features": [None, "sqrt", "log2"],
     # }
+    hyperparameter_grid = RFHyperparameterGrid()
     hyperparam_dict = {
-        "n_estimators": [100],
-        "max_depth": [None, 10],
-        "min_samples_split": [2],
-        "min_samples_leaf": [1],
-        "max_features": [None, "log2"],
+        N_ESTIMATORS: hyperparameter_grid.n_estimators,
+        MAX_DEPTH: hyperparameter_grid.max_depth,
+        MIN_SAMPLES_SPLIT: hyperparameter_grid.min_samples_split,
+        MIN_SAMPLES_LEAF: hyperparameter_grid.min_samples_leaf,
+        MAX_FEATURES: hyperparameter_grid.max_features,
     }
 
 # for random forest
 hyperparam_combinations = list(itertools.product(*hyperparam_dict.values()))
-
-
 log_dir = args.log_dir
 
 # go through all subfolders and search for file called "results.json"
 # when a gridsearch was done for every target dimension (with all numbers of folds)
 # this gets tedious, so all subdirs are searched
 for subdir, _, files in os.walk(log_dir):
-    for file in files:
-        if file == "results.json":
+    for result_file in files:
+        if result_file == "results.json":
             log_folder = subdir
-            df = load_df(subdir, file)
+            df = load_df(subdir, result_file)
             average_df = average_over_hparam_combinations(
                 df, hyperparam_dict, args.learner
             )
@@ -91,7 +123,6 @@ for subdir, _, files in os.walk(log_dir):
                     indent=4,
                 )
             best_model = find_best_hparams(average_df, mode="loss")
-            print(best_model)
             if not os.path.exists(f"{log_folder}/best_model_hparams.json"):
                 save_best_hparams_df(
                     f"{log_folder}/best_model_hparams.json", best_model
