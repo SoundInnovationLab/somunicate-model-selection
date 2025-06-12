@@ -134,6 +134,8 @@ folder.
 
 ## Recommendations
 
+### Logging Directory Structure
+
 Since testing all possible model configrations and the whole process is
 very complex we recommend following a structure for the result logs like
 this (same structure with a different base for the best model trainings):
@@ -150,6 +152,21 @@ logs/gridsearch/
 
 Within those directories a folder for each model (e.g. "all" or
 "being_ready") will be created automatically.
+
+### Dataset
+
+Since the dataset is copyrighted and not publicly available, we provided a
+dummy dataset that can be used to test the scripts. The dummy dataset is
+located in the `´data/` directory. It contains the same structure and
+number of samples as the original dataset, but the values are randomly
+generated.
+
+To use another dataset, you can replace the path in the following files:
+
+- `somunicate-model-selection/gridsearch_kfold_dnn.py`
+- `somunicate-model-selection/gridsearch_kfold_rf.py`
+- `somunicate-model-selection/train_best_models_dnn.py`
+- `somunicate-model-selection/train_best_models_rf.py`
 
 ## Building the project
 

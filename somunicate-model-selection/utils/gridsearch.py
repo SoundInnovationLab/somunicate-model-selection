@@ -4,17 +4,17 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 
 _FOLD_PARAMS = (
-    (3, (205, 600, 10)),
-    (4, (161, 644, 7)),
-    (5, (125, 680, 8)),
-    (6, (115, 690, 5)),
+    (3, 205, 600, 10),
+    (4, 161, 644, 7),
+    (5, 125, 680, 8),
+    (6, 115, 690, 5),
 )
 
 
 def _get_fold_params(n_folds: int) -> tuple[int, int, int]:
     try:
         # only return the number of test samples, train/val samples, and bins
-        return _FOLD_PARAMS[n_folds][1]
+        return _FOLD_PARAMS[n_folds - 3][1:]
     except KeyError:
         raise ValueError(f"n_folds must be one of {tuple(_FOLD_PARAMS)}") from None
 

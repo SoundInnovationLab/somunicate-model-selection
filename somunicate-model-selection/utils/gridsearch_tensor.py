@@ -29,18 +29,18 @@ def _compute_tensor_bin_edges(
 
 def _stratify_tensor_labels(
     target_tensor: torch.Tensor, n_bins: int, non_parametric: bool
-) -> tuple[torch.Tensor, torch.Tensor]:
+) -> torch.Tensor:
     """Stratifies tensor labels for train/test split."""
     # ensure two-dimensional tensor
     if target_tensor.ndim == 1:
         target_tensor = target_tensor.unsqueeze(1)
     if target_tensor.shape[1] > 1:
         arr = PCA(n_components=1).fit_transform(target_tensor.numpy())
-        target_array = torch.tensor(arr, dtype=torch.float32)
-    target_values = target_array.view(-1)
+        target_tensor = torch.tensor(arr, dtype=torch.float32)
+    target_values = target_tensor.view(-1)
     # compute bin edges
     edges = _compute_tensor_bin_edges(target_values, n_bins, non_parametric)
-    return torch.bucketize(target_values, edges), edges
+    return torch.bucketize(target_values, edges)
 
 
 def get_stratified_train_test_split(  # noqa: WPS210
@@ -57,9 +57,9 @@ def get_stratified_train_test_split(  # noqa: WPS210
     expected = n_trainval if train_val else n_trainval + n_test
     _validate_total_samples(total, expected, train_val)
 
-    # stratify labels and get edges
+    # stratify labels
     target_tensor = dataset.tensors[1]
-    labels, edges = _stratify_tensor_labels(target_tensor, n_bins, non_parametric)
+    labels = _stratify_tensor_labels(target_tensor, n_bins, non_parametric)
     indices = torch.arange(total)
 
     # perform split
