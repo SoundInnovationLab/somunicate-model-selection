@@ -1,4 +1,10 @@
-# Overview
+# Code Supplement for Submission of TISMIR Research Article
+
+This repository provides the code supplement for the research article
+"Expanding MIR into new audio domains: Predicting Perceived Meaning of
+Functional Sounds using Unsupervised Feature Extraction and Ensemble
+Learning" submitted to "TISMIR - Transactions of the International Society
+for Music Information Retrieval".
 
 This repository contains code for performing model selection for a
 regression model that predicts perceived semantic expression from the
@@ -9,6 +15,11 @@ configurations (Multioutput and Singleoutput) and the inclusion of
 additional input features (meatdata). The process involves hyperparameter
 grid search with k-fold cross-validation, evaluation of grid search
 results, and retraining/evaluation of the best model.
+
+Due to copyright restrictions, the original dataset used in the publication
+cannot be made publicly available. However, a dummy dataset with the same
+structure and number of samples as the original is provided in the `data/`
+directory to allow users to test and reproduce the code.
 
 # How to Use
 
