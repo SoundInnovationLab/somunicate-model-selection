@@ -1,8 +1,3 @@
-# python-uv-template
-
-Please rename the top part to match your repository. Also make sure that
-[pyproject.toml](./pyproject.toml) contains the correct repository name.
-
 ## Preqrequisites
 
 Make sure you have
@@ -38,12 +33,123 @@ uv run pre-commit run --all-files # Test if the pre-commit hooks work
 
 ### 3. Running the project
 
-Make sure you edit this once you have a specific project that you are using
-(e.g. [FastAPI](https://fastapi.tiangolo.com/)).
+The model selection process consists of three steps:
+
+1. Performing the extensive hyperparameter gridserach with k-fold
+   cross-validation
+2. Determining the hyperparameters for the given configuration (averaging
+   the performance over the folds)
+3. Retraining and evaluating a model with those optimal hyperparameters
+
+For step 1 and step 3 the different learning paradigmns (Deep Neural
+Network and Random Forest) have separate scripts. The evaluation works for
+both learners.
+
+In the publication all combinations of the following setups were tested:
+
+- Learning Paradigmn: Deep Neural Network / Random Forest
+- Output Configuration: Multioutput (all dimensions) / Multioutput (1 model
+  per communication level) / Singleoutput (one model per dimension)
+- Inclusion of Industry Metadata: Yes / No
+
+For the different output configurations the process has to be repeated for
+each model trained, so once for Multioutput (all dimensions), three times
+for Multioutput (1 model per communication level) and 19 times for
+Singleoutput (one model per dimension).
+
+### 1. Performing the k-fold cross-validation with hyperparameter gridserach
+
+Both scripts are structured the same and share the following arguments:
+
+- --subset (str): The options are 'all', 'status', 'appeal', 'brand
+  identity' and 'dimensions'
+- --target_index (int): only needed when subset==dimensions. Then you have
+  to provide the index of the target dimension (from 0 to 18)
+- --include_industry: True or False
+- --folds (int): either 3,4,5 or 6
+- --log_folder (str): Path to the location where the training results
+  should be stored
+- --log_subfolder (str): subfolder within the log_folder. We recommend
+  indicating the number of cross-validation folds
+
+An example for training a multioutput DNN Regressor using the industry
+metadata and doing a 5-fold validation
 
 ```bash
-uv run app/main.py
+uv run python somunicate-model-selection/gridsearch_kfold_dnn.py --subset all --include_industry True --folds 5 --log_folder ./logs/gridsearch_dnn_with_industry --log_subfolder k_5
 ```
+
+Inside the log_folder a folder called "all" will be created and inside this
+the "k_4" will contain a "results.json" file when the gridsearch is done.
+
+### 2. Finding the best hyperparameters
+
+This script will access the "results.json" to determine the best
+hyperparameters over all folds of the gridsearch. It needs the following
+arguments:
+
+- --log_dir (str): Path to the location from where the the result.json
+  should be gathered. All subdirs of the given path are searched for a file
+  called "results.json" so you could provide a high level path and all
+  gridsearches inside would be evaluated at once.
+- --learner (str): Options are "dnn" and "rf". depending on the learning
+  paradigmn the hyperparameters are different.
+
+```bash
+uv run python somunicate-model-selection/evaluate_gridsearch_results.py --log_dir ./logs/gridsearch_dnn_with_industry/all/k_5 --learner dnn
+```
+
+Within the same folder the evaluation generates two files, one storing the
+average gridserach results per hyperparameter combination (avg over folds)
+called "fold_average_results.json" and one containing the best
+hyperparameters called "best_model_hparams.json".
+
+### 3. Retraining and evaluating a model with the best hyperparameters
+
+This last script works similarly to the first one and accesses the best
+hyperparams found in the previous script.
+
+It needs the following arguments:
+
+- --hparam_file (str): Path to where the best hyperparameters are stored
+- --include_industry: True or False
+- --folds (int): either 3,4,5 or 6. This is important for the split sizes
+  of the data.
+- --log_folder (str): Path to the location where the best model training
+  results should be stored
+- --n_experiments (int): The best model training can be repeated several
+  times if needed.
+
+After the training is done the model is also evaluated on a holdout test
+set.
+
+```bash
+uv run python somunicate-model-selection/train_best_models_dnn.py --hparam_file ./logs/gridsearch_dnn_with_industry/all/k_5/best_model_hparams.json --include_industry True --n_folds 5 --log_folder ./logs/best_dnn_with_industry
+```
+
+Model predictions on the complete dataset ("predictions_0.json"), the test
+results ("results.json") and a file storing the indices of the datapoints
+for the test set ("test_indices.json") automatically created inside the log
+folder.
+
+## Recommendations
+
+Since testing all possible model configrations and the whole process is
+very complex we recommend following a structure for the result logs like
+this (same structure with a different base for the best model trainings):
+
+```
+logs/gridsearch/
+    └── dnn/
+        └── with_industry/
+        └── without_industry/
+    └── rf/
+        └── with_industry/
+        └── without_industry/
+```
+
+Within those directories a folder for each model (e.g. "all" or
+"being_ready") will be created automatically.
 
 ## Building the project
 

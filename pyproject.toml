@@ -5,9 +5,14 @@ description = "Python template with uv"
 authors = [{ name = "Felix Weiss", email = "weiss@soundinnovationlab.com" }, { name = "Siamend Darwesh", email = "darwesh@soundinnovationlab.com"} ]
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.10"
 dependencies = [
+    "pandas==2.2.2",
     "pydantic>=2.11.1",
+    "pytorch-lightning==2.2.2",
+    "scikit-learn==1.4.2",
+    "torch==2.2.2",
+    "numpy<2"
 ]
 
 [dependency-groups]

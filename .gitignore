@@ -169,3 +169,7 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+data/240918_median_data_3_features.json
+somunicate-model-selection/create_dummy_data.py
+logs/
