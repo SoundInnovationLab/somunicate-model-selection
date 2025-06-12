@@ -8,6 +8,7 @@ import argparse
 import itertools
 import logging
 import os
+from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Literal
 
@@ -20,8 +21,8 @@ from torch.utils.data import DataLoader, TensorDataset
 from utils.gridsearch import (
     get_pseudo_classes,
     get_single_target_tensor,
-    get_stratified_train_test_split,
 )
+from utils.gridsearch_tensor import get_stratified_train_test_split
 from utils.utils import load_global_variables
 
 torch.set_float32_matmul_precision("medium")
@@ -90,7 +91,7 @@ logger.info("Loading data...")
 data_df = pd.read_json("./data/dummy_audio_dataset.json", orient="records")
 
 # Define subset types and mapping
-SubsetType = Literal[DIMENSIONS, STATUS, APPEAL, BRAND_IDENTITY, ALL]
+SubsetType = Literal["dimensions", "status", "appeal", "brand_identity", "all"]
 subset_mapping = {
     DIMENSIONS: global_variables["target_list"],
     STATUS: global_variables["status_list"],
@@ -175,8 +176,11 @@ hyperparam_dict = {
     LAYER_CONFIG: grid_search_config.layer_config,
 }
 
-hyperparam_combinations = list(itertools.product(*hyperparam_dict.values()))
-
+hyperparam_combinations = list(
+    itertools.product(
+        *[hval for hval in hyperparam_dict.values() if isinstance(hval, Iterable)]
+    )
+)
 # stratified k-fold split needs the X and y for stratified splitting
 train_val_features = feature_tensor[train_indices]
 train_val_targets = target_tensor[train_indices]

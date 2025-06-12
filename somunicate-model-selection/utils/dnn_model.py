@@ -13,11 +13,11 @@ class R2Score(Metric):
         self.add_state("y_true", default=torch.tensor([]), dist_reduce_fx=None)
         self.add_state("y_pred", default=torch.tensor([]), dist_reduce_fx=None)
 
-    def update(self, y_pred: torch.Tensor, y_true: torch.Tensor):
+    def update(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> None:
         y_true = y_true.detach().cpu().to(torch.float32)
         y_pred = y_pred.detach().cpu().to(torch.float32)
-        self.y_true = self.y_true.cpu()
-        self.y_pred = self.y_pred.cpu()
+        self.y_true: torch.Tensor = self.y_true.cpu()
+        self.y_pred: torch.Tensor = self.y_pred.cpu()
         self.y_true = torch.cat((self.y_true, y_true))
         self.y_pred = torch.cat((self.y_pred, y_pred))
 

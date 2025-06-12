@@ -9,7 +9,8 @@ import pytorch_lightning as pl
 import torch
 from dnn_models import DNNRegressor, LossType, ModelConfig
 from torch.utils.data import DataLoader, TensorDataset
-from utils.gridsearch import get_stratified_train_test_split, get_target_tensor
+from utils.gridsearch import get_target_tensor
+from utils.gridsearch_tensor import get_stratified_train_test_split
 from utils.utils import load_global_variables
 
 logging.basicConfig(
