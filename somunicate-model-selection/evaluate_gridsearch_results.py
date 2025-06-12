@@ -131,3 +131,13 @@ for subdir, _, files in os.walk(log_dir):
                 save_best_hparams_df(
                     f"{log_folder}/best_model_hparams.json", best_model
                 )
+
+
+def main():
+    """
+    Evaluates grid search results by averaging performance metrics over hyperparameter combinations
+    and identifying the best hyperparameter configuration.
+
+    This script processes all subdirectories in the specified log directory, computes averages,
+    and saves the results to JSON files.
+    """

@@ -156,6 +156,11 @@ class BaseRegressor(pl.LightningModule):
 
 
 class DNNRegressor(BaseRegressor):
+    """
+    A deep neural network regressor that extends the BaseRegressor class.
+    This model is designed to handle the regression tasks with customizable hidden layers.
+    """
+
     def __init__(
         self,
         hidden_dims: list[int],

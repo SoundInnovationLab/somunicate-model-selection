@@ -16,7 +16,17 @@ VAL_R2_MEAN = "val_r2_mean"
 
 
 def average_over_hparam_combinations(df, hyperparam_dict, mode):  # noqa: WPS210
-    """Averages performance metrics over hyperparameter combinations."""
+    """
+    Averages performance metrics over hyperparameter combinations.
+
+    Args:
+        df (pd.DataFrame): DataFrame containing performance metrics.
+        hyperparam_dict (dict): Dictionary of hyperparameter combinations.
+        mode (str): Mode of the learner ('dnn' or 'rf').
+
+    Returns:
+        pd.DataFrame: DataFrame with averaged performance metrics.
+    """
     hyperparam_combinations = list(itertools.product(*hyperparam_dict.values()))
     columns = list(df.columns) + [VAL_LOSS_MEAN, VAL_R2_MEAN]
     average_df = pd.DataFrame(columns=columns).drop(columns=["model_version", "fold"])
@@ -36,6 +46,16 @@ def average_over_hparam_combinations(df, hyperparam_dict, mode):  # noqa: WPS210
 def find_best_hparams(
     average_df: pd.DataFrame, mode: Literal["loss", "r2"] = "loss"
 ) -> pd.DataFrame:
+    """
+    Finds the best hyperparameter combination based on the specified mode.
+
+    Args:
+        average_df (pd.DataFrame): DataFrame with averaged performance metrics.
+        mode (Literal["loss", "r2"], optional): Metric to optimize ('loss' or 'r2'). Defaults to 'loss'.
+
+    Returns:
+        pd.DataFrame: DataFrame containing the best hyperparameter combination.
+    """
     if mode == "r2":
         # find maximum r2
         max_r2 = average_df[VAL_R2_MEAN].max()
@@ -47,7 +67,13 @@ def find_best_hparams(
 
 
 def save_best_hparams_df(file_name: str, best_model: pd.DataFrame) -> None:
-    """Saves the DataFrame containing the best hyperparameter combination to a JSON file."""
+    """
+    Saves the DataFrame containing the best hyperparameter combination to a JSON file.
+
+    Args:
+        file_name (str): Path to the JSON file.
+        best_model (pd.DataFrame): DataFrame containing the best hyperparameter combination.
+    """
     if os.path.exists(file_name):
         best_df = pd.read_json(file_name, orient="records")
         best_df = _append_best_model(best_df, best_model)

@@ -75,12 +75,33 @@ def get_stratified_train_test_split(  # noqa: WPS210
 
 
 def get_single_target_tensor(tensor: torch.Tensor, target_index: int) -> torch.Tensor:
-    """Extract a single target column as a 2D tensor."""
+    """
+    Extracts a single target column as a 2D tensor.
+
+    Args:
+        tensor (torch.Tensor): Input tensor containing multiple target columns.
+        target_index (int): Index of the target column to extract.
+
+    Returns:
+        torch.Tensor: A 2D tensor containing the selected target column.
+    """
     return tensor[:, target_index].unsqueeze(1)
 
 
 def get_target_tensor(target_df, target_index: int | None = None) -> torch.Tensor:
-    """Convert a DataFrame of targets to a tensor, optionally selecting one column."""
+    """
+    Converts a DataFrame of targets to a tensor, optionally selecting one column.
+
+    Args:
+        target_df (pd.DataFrame): DataFrame containing target values.
+        target_index (int | None, optional): Index of the target column to select. Defaults to None.
+
+    Returns:
+        torch.Tensor: A tensor containing the target values.
+
+    Raises:
+        ValueError: If the target_index is invalid or the tensor shape is incompatible.
+    """
     tensor = torch.tensor(target_df.values, dtype=torch.float32)
     if target_index is not None:
         if tensor.ndim != 2 or tensor.shape[1] <= target_index:
@@ -94,7 +115,17 @@ def get_target_tensor(target_df, target_index: int | None = None) -> torch.Tenso
 def _split_indices(
     indices: torch.Tensor, train_size: float, labels: torch.Tensor
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """Splits indices into train and test/validation sets."""
+    """
+    Splits indices into train and test/validation sets.
+
+    Args:
+        indices (torch.Tensor): Tensor of sample indices.
+        train_size (float): Proportion of the dataset to include in the training split.
+        labels (torch.Tensor): Tensor of stratification labels.
+
+    Returns:
+        tuple[torch.Tensor, torch.Tensor]: Train and test/validation indices.
+    """
     train_idx, test_idx = train_test_split(
         indices, train_size=train_size, stratify=labels
     )

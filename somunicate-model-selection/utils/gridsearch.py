@@ -55,7 +55,17 @@ def _stratify_array_labels(
 
 
 def _validate_total_samples(total: int, expected: int, train_val: bool) -> None:
-    """Validates the total number of samples against the expected number."""
+    """
+    Validates the total number of samples against the expected number.
+
+    Args:
+        total (int): The total number of samples.
+        expected (int): The expected number of samples.
+        train_val (bool): Whether the split is for training/validation or full dataset.
+
+    Raises:
+        ValueError: If the total number of samples does not match the expected number.
+    """
     if total != expected:
         kind = "train/val" if train_val else "full"
         raise ValueError(f"Expected {expected} samples for {kind} split, got {total}")
@@ -64,7 +74,17 @@ def _validate_total_samples(total: int, expected: int, train_val: bool) -> None:
 def _perform_train_test_split(
     indices: np.ndarray, labels: np.ndarray, train_size: float
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Performs the train/test split using sklearn."""
+    """
+    Performs a stratified train/test split.
+
+    Args:
+        indices (np.ndarray): Array of sample indices.
+        labels (np.ndarray): Array of stratification labels.
+        train_size (float): Proportion of the dataset to include in the training split.
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: Train and test indices.
+    """
     return train_test_split(indices, train_size=train_size, stratify=labels)
 
 
@@ -75,7 +95,19 @@ def get_stratified_array_train_test_split(  # noqa: WPS210
     non_parametric: bool = False,
     train_val: bool = False,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Splits arrays into stratified train/test or train/val indices."""
+    """
+    Splits arrays into stratified train/test or train/validation indices.
+
+    Args:
+        feature_data (np.ndarray): Feature data array.
+        target_data (np.ndarray): Target data array.
+        n_folds (int): Number of folds for cross-validation.
+        non_parametric (bool, optional): Whether to use non-parametric binning. Defaults to False.
+        train_val (bool, optional): Whether to split into train/validation. Defaults to False.
+
+    Returns:
+        tuple[np.ndarray, np.ndarray]: Train and test/validation indices.
+    """
     n_test, n_trainval, n_bins = _get_fold_params(n_folds)
     total = feature_data.shape[0]
 
@@ -101,7 +133,17 @@ def get_stratified_array_train_test_split(  # noqa: WPS210
 def get_pseudo_classes(
     target_data: np.ndarray, n_folds: int, non_parametric: bool = False
 ) -> np.ndarray:
-    """Converts continuous targets into pseudo-classes for StratifiedKFold."""
+    """
+    Converts continuous target values into pseudo-classes for stratification.
+
+    Args:
+        target_data (np.ndarray): Target data array.
+        n_folds (int): Number of folds for cross-validation.
+        non_parametric (bool, optional): Whether to use non-parametric binning. Defaults to False.
+
+    Returns:
+        np.ndarray: Array of pseudo-classes.
+    """
     # number of stratification bins equals per-fold setting
     _, _, n_bins = _get_fold_params(n_folds)
     labels = _stratify_array_labels(target_data, n_bins, non_parametric)

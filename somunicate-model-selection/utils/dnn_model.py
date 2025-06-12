@@ -5,7 +5,11 @@ from torchmetrics import Metric
 
 class R2Score(Metric):
     """
-    R2 Score metric for Regression Learner.
+    Computes the R2 score for regression tasks.
+
+    Attributes:
+        y_true (torch.Tensor): Tensor to store true target values.
+        y_pred (torch.Tensor): Tensor to store predicted values.
     """
 
     def __init__(self):
@@ -14,6 +18,13 @@ class R2Score(Metric):
         self.add_state("y_pred", default=torch.tensor([]), dist_reduce_fx=None)
 
     def update(self, y_pred: torch.Tensor, y_true: torch.Tensor) -> None:
+        """
+        Updates the state with new predictions and true values.
+
+        Args:
+            y_pred (torch.Tensor): Predicted values.
+            y_true (torch.Tensor): True target values.
+        """
         y_true = y_true.detach().cpu().to(torch.float32)
         y_pred = y_pred.detach().cpu().to(torch.float32)
         self.y_true: torch.Tensor = self.y_true.cpu()
@@ -22,6 +33,12 @@ class R2Score(Metric):
         self.y_pred = torch.cat((self.y_pred, y_pred))
 
     def compute(self):
+        """
+        Computes the R2 score.
+
+        Returns:
+            torch.Tensor: The computed R2 score.
+        """
         if len(self.y_true) == 0:
             return torch.tensor(float("nan"))
 
@@ -32,7 +49,11 @@ class R2Score(Metric):
 
 class RMSEMetric(Metric):
     """
-    Root Mean Squared Error metric for Regression Learner.
+    Computes the Root Mean Squared Error (RMSE) for regression tasks.
+
+    Attributes:
+        sum_squared_error (torch.Tensor): Accumulator for the sum of squared errors.
+        total_samples (torch.Tensor): Accumulator for the total number of samples.
     """
 
     def __init__(self):
@@ -54,6 +75,12 @@ class RMSEMetric(Metric):
         self.total_samples += preds.size(0)
 
     def compute(self):
+        """
+        Computes the RMSE.
+
+        Returns:
+            torch.Tensor: The computed RMSE value.
+        """
         if self.total_samples == 0:
             return torch.tensor(
                 0, dtype=torch.float32
