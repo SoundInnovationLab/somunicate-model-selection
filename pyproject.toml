@@ -1,8 +1,8 @@
 [project]
-name = "python-uv-template"
+name = "somunicate-model-selection"
 version = "0.1.0"
-description = "Python template with uv"
-authors = [{ name = "Felix Weiss", email = "weiss@soundinnovationlab.com" }, { name = "Siamend Darwesh", email = "darwesh@soundinnovationlab.com"} ]
+description = "accompanying repository for the TISMIR publication by Annika Frommholz"
+authors = [{ name = "Annika Frommholz", email = "frommholz@tu-berlin.de" }]
 license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.10"
