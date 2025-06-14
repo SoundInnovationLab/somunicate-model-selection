@@ -171,7 +171,7 @@ cython_debug/
 .pypirc
 
 data/240918_median_data_3_features.json
-somunicate-model-selection/create_dummy_data.py
+somunicate_model_selection/create_dummy_data.py
 logs/
 help.txt
 .DS_Store

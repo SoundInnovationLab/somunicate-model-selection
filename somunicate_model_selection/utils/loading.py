@@ -17,7 +17,7 @@ def load_global_variables() -> dict:
     return global_variables
 
 
-def load_df(log_folder: str, file_name: str):
+def load_df(log_folder: str, file_name: str) -> pd.DataFrame:
     """Loads a DataFrame from a JSON file.
 
     Args:

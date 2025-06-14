@@ -1,3 +1,5 @@
+from typing import Any
+
 import numpy as np
 import pandas as pd
 
@@ -21,7 +23,7 @@ def _append_best_model(best_df: pd.DataFrame, best_model: pd.DataFrame) -> pd.Da
     return pd.concat([best_df, new_row], ignore_index=True)
 
 
-def _filter_dataframe(df, hyperparam):
+def _filter_dataframe(df: pd.DataFrame, hyperparam: dict[str, Any]) -> pd.DataFrame:
     """
     Filters the DataFrame based on hyperparameter values.
 
@@ -38,7 +40,7 @@ def _filter_dataframe(df, hyperparam):
     return filtered_df
 
 
-def _apply_filter(df, key, hparam_value):
+def _apply_filter(df: pd.DataFrame, key: str, hparam_value: Any) -> pd.DataFrame:
     """
     Applies a specific filter to the DataFrame based on the key.
 
@@ -94,7 +96,7 @@ def _get_hparam_columns(mode: str) -> list[str]:
         raise ValueError(f"Unknown mode: {mode}")
 
 
-def _create_new_row(filtered_df, hparam_columns):
+def _create_new_row(filtered_df: pd.DataFrame, hparam_columns: list[str]) -> pd.Series:
     """
     Creates a new row with hyperparameter values and mean loss/r2.
 
