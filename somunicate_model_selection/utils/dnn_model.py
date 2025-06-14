@@ -32,7 +32,7 @@ class R2Score(Metric):
         self.y_true = torch.cat((self.y_true, y_true))
         self.y_pred = torch.cat((self.y_pred, y_pred))
 
-    def compute(self):
+    def compute(self) -> torch.Tensor:
         """
         Computes the R2 score.
 
@@ -66,7 +66,7 @@ class RMSEMetric(Metric):
         )
         self.add_state("total_samples", default=torch.tensor(0), dist_reduce_fx="sum")
 
-    def update(self, preds: torch.Tensor, targets: torch.Tensor):
+    def update(self, preds: torch.Tensor, targets: torch.Tensor) -> None:
         # Flatten tensors to ensure 1D
         preds = preds.view(-1)
         targets = targets.view(-1)
@@ -74,7 +74,7 @@ class RMSEMetric(Metric):
         self.sum_squared_error += squared_error
         self.total_samples += preds.size(0)
 
-    def compute(self):
+    def compute(self) -> torch.Tensor:
         """
         Computes the RMSE.
 

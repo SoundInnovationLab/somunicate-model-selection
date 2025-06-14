@@ -15,7 +15,9 @@ VAL_LOSS_MEAN = "val_loss_mean"
 VAL_R2_MEAN = "val_r2_mean"
 
 
-def average_over_hparam_combinations(df, hyperparam_dict, mode):  # noqa: WPS210
+def average_over_hparam_combinations(  # noqa: WPS210
+    df: pd.DataFrame, hyperparam_dict: dict[str, list], mode: str
+) -> pd.DataFrame:
     """
     Averages performance metrics over hyperparameter combinations.
 
