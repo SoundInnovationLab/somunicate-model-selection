@@ -101,7 +101,7 @@ An example for training a multioutput DNN Regressor using the industry
 metadata and doing a 5-fold validation
 
 ```bash
-uv run python somunicate-model-selection/gridsearch_kfold_dnn.py --subset all --include_industry True --folds 5 --log_folder ./logs/gridsearch_dnn_with_industry --log_subfolder k_5
+uv run python somunicate_model_selection/gridsearch_kfold_dnn.py --subset all --include_industry True --folds 5 --log_folder ./logs/gridsearch_dnn_with_industry --log_subfolder k_5
 ```
 
 Inside the log_folder a folder called "all" will be created and inside this
@@ -121,7 +121,7 @@ arguments:
   paradigmn the hyperparameters are different.
 
 ```bash
-uv run python somunicate-model-selection/evaluate_gridsearch_results.py --log_dir ./logs/gridsearch_dnn_with_industry/all/k_5 --learner dnn
+uv run python somunicate_model_selection/evaluate_gridsearch_results.py --log_dir ./logs/gridsearch_dnn_with_industry/all/k_5 --learner dnn
 ```
 
 Within the same folder the evaluation generates two files, one storing the
@@ -149,7 +149,7 @@ After the training is done the model is also evaluated on a holdout test
 set.
 
 ```bash
-uv run python somunicate-model-selection/train_best_models_dnn.py --hparam_file ./logs/gridsearch_dnn_with_industry/all/k_5/best_model_hparams.json --include_industry True --n_folds 5 --log_folder ./logs/best_dnn_with_industry
+uv run python somunicate_model_selection/train_best_models_dnn.py --hparam_file ./logs/gridsearch_dnn_with_industry/all/k_5/best_model_hparams.json --include_industry True --n_folds 5 --log_folder ./logs/best_dnn_with_industry
 ```
 
 Model predictions on the complete dataset ("predictions_0.json"), the test
@@ -188,10 +188,10 @@ generated.
 
 To use another dataset, you can replace the path in the following files:
 
-- `somunicate-model-selection/gridsearch_kfold_dnn.py`
-- `somunicate-model-selection/gridsearch_kfold_rf.py`
-- `somunicate-model-selection/train_best_models_dnn.py`
-- `somunicate-model-selection/train_best_models_rf.py`
+- `somunicate_model_selection/gridsearch_kfold_dnn.py`
+- `somunicate_model_selection/gridsearch_kfold_rf.py`
+- `somunicate_model_selection/train_best_models_dnn.py`
+- `somunicate_model_selection/train_best_models_rf.py`
 
 ## Building the project
 
