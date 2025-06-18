@@ -1,6 +1,7 @@
 import argparse
 import itertools
 import os
+import warnings
 from collections.abc import Iterable
 from dataclasses import dataclass, field
 from typing import Any
@@ -13,6 +14,9 @@ from sklearn.metrics import make_scorer, mean_squared_error
 from sklearn.model_selection import StratifiedKFold
 from utils.gridsearch import get_pseudo_classes, get_stratified_array_train_test_split
 from utils.loading import load_global_variables
+
+# RMSE loss function in this throws a warning
+warnings.filterwarnings("ignore")
 
 DIMENSIONS = "dimensions"
 STATUS = "status"
