@@ -1,7 +1,7 @@
 # Code Supplement for Submission of TISMIR Research Article
 
 This repository provides the code supplement for the research article
-"Expanding MIR into new audio domains: Predicting Perceived Meaning of
+"Predicting Perceived Meaning of
 Functional Sounds using Unsupervised Feature Extraction and Ensemble
 Learning" submitted to "TISMIR - Transactions of the International Society
 for Music Information Retrieval".
