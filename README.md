@@ -1,10 +1,16 @@
 # Code Supplement for Submission of TISMIR Research Article
 
 This repository provides the code supplement for the research article
-"Predicting Perceived Meaning of
-Functional Sounds using Unsupervised Feature Extraction and Ensemble
-Learning" submitted to "TISMIR - Transactions of the International Society
-for Music Information Retrieval".
+"Predicting Perceived Meaning of Functional Sounds using Unsupervised
+Feature Extraction and Ensemble Learning" submitted by Annika Frommholz to
+the
+[special collection](https://account.transactions.ismir.net/index.php/up-j-tismir/libraryFiles/downloadPublic/4)
+on "Digital Musicology" in
+"[TISMIR - Transactions of the International Society for Music Information Retrieval](https://transactions.ismir.net/)".
+The reserach was conducted in collaboration between
+[Audiocommunication Group](https://www.tu.berlin/en/ak) of Technische
+Universität Berlin and
+[Sound Innovation Lab](https://www.soundinnovationlab.com/).
 
 This repository contains code for performing model selection for a
 regression model that predicts perceived semantic expression from the
