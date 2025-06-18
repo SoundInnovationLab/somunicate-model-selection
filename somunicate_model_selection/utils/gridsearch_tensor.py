@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import torch
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
@@ -88,7 +89,9 @@ def get_single_target_tensor(tensor: torch.Tensor, target_index: int) -> torch.T
     return tensor[:, target_index].unsqueeze(1)
 
 
-def get_target_tensor(target_df, target_index: int | None = None) -> torch.Tensor:
+def get_target_tensor(
+    target_df: pd.DataFrame, target_index: int | None = None
+) -> torch.Tensor:
     """
     Converts a DataFrame of targets to a tensor, optionally selecting one column.
 

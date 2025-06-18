@@ -45,7 +45,7 @@ class BaseRegressor(pl.LightningModule):
         self._initialize_metrics()
         self.save_hyperparameters(asdict(args))
 
-    def configure_optimizers(self):
+    def configure_optimizers(self) -> dict | optim.Optimizer:
         if self._base_regressor_args.weight_decay:
             optimizer = optim.Adam(
                 self.parameters(),
@@ -75,7 +75,9 @@ class BaseRegressor(pl.LightningModule):
         else:
             return optimizer
 
-    def training_step(self, batch, batch_idx):
+    def training_step(
+        self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
+    ) -> torch.Tensor:
         """
         Performs a single training step.
 
@@ -95,7 +97,9 @@ class BaseRegressor(pl.LightningModule):
         )
         return loss
 
-    def validation_step(self, batch, batch_idx):
+    def validation_step(
+        self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
+    ) -> torch.Tensor:
         """
         Performs a single validation step.
 
@@ -113,7 +117,9 @@ class BaseRegressor(pl.LightningModule):
         self.log_dict({"valid_loss": loss, "valid_r2": r2}, on_step=True, on_epoch=True)
         return loss
 
-    def test_step(self, batch, batch_idx):
+    def test_step(
+        self, batch: tuple[torch.Tensor, torch.Tensor], batch_idx: int
+    ) -> torch.Tensor:
         """
         Performs a single test step.
 

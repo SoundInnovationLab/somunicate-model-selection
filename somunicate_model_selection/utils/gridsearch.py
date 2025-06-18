@@ -1,5 +1,7 @@
 import numpy as np
+import pandas as pd
 import torch
+from numpy.typing import NDArray
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 
@@ -19,14 +21,14 @@ def _get_fold_params(n_folds: int) -> tuple[int, int, int]:
         raise ValueError(f"n_folds must be one of {tuple(_FOLD_PARAMS)}") from None
 
 
-def _apply_pca(arr: np.ndarray) -> np.ndarray:
+def _apply_pca(arr: NDArray[np.float32]) -> NDArray[np.float32]:
     """Applies PCA to reduce the array to one component."""
     return PCA(n_components=1).fit_transform(arr)
 
 
 def _compute_bin_edges(
-    target_values: np.ndarray, n_bins: int, non_parametric: bool
-) -> np.ndarray:
+    target_values: NDArray[np.float32], n_bins: int, non_parametric: bool
+) -> NDArray[np.float32]:
     """Computes bin edges for stratification."""
     if non_parametric:
         edges = np.quantile(target_values, np.linspace(0, 1, n_bins + 1))
@@ -40,8 +42,8 @@ def _compute_bin_edges(
 
 
 def _stratify_array_labels(
-    target_data: np.ndarray, n_bins: int, non_parametric: bool
-) -> np.ndarray:
+    target_data: NDArray[np.float32], n_bins: int, non_parametric: bool
+) -> NDArray[np.float32]:
     """Stratifies array labels for train/test split."""
     # ensure 2D array
     arr = target_data if target_data.ndim == 2 else target_data.reshape(-1, 1)
@@ -72,8 +74,8 @@ def _validate_total_samples(total: int, expected: int, train_val: bool) -> None:
 
 
 def _perform_train_test_split(
-    indices: np.ndarray, labels: np.ndarray, train_size: float
-) -> tuple[np.ndarray, np.ndarray]:
+    indices: NDArray[np.float32], labels: NDArray[np.float32], train_size: float
+) -> tuple[NDArray[np.float32], NDArray[np.float32]]:
     """
     Performs a stratified train/test split.
 
@@ -89,12 +91,12 @@ def _perform_train_test_split(
 
 
 def get_stratified_array_train_test_split(  # noqa: WPS210
-    feature_data: np.ndarray,
-    target_data: np.ndarray,
+    feature_data: NDArray[np.float32],
+    target_data: NDArray[np.float32],
     n_folds: int,
     non_parametric: bool = False,
     train_val: bool = False,
-) -> tuple[np.ndarray, np.ndarray]:
+) -> tuple[NDArray[np.float32], NDArray[np.float32]]:
     """
     Splits arrays into stratified train/test or train/validation indices.
 
@@ -131,8 +133,8 @@ def get_stratified_array_train_test_split(  # noqa: WPS210
 
 
 def get_pseudo_classes(
-    target_data: np.ndarray, n_folds: int, non_parametric: bool = False
-) -> np.ndarray:
+    target_data: NDArray[np.float32], n_folds: int, non_parametric: bool = False
+) -> NDArray[np.float32]:
     """
     Converts continuous target values into pseudo-classes for stratification.
 
@@ -156,7 +158,9 @@ def get_single_target_tensor(tensor: torch.Tensor, target_index: int) -> torch.T
     return tensor[:, target_index].unsqueeze(1)
 
 
-def get_target_tensor(target_df, target_index: int | None = None) -> torch.Tensor:
+def get_target_tensor(
+    target_df: pd.DataFrame, target_index: int | None = None
+) -> torch.Tensor:
     """Convert a DataFrame of targets to a tensor, optionally selecting one column."""
     tensor = torch.tensor(target_df.values, dtype=torch.float32)
     if target_index is not None:
