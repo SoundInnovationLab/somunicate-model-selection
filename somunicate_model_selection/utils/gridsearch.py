@@ -13,7 +13,7 @@ _FOLD_PARAMS = (
 )
 
 
-def _get_fold_params(n_folds: int) -> tuple[int, int, int]:
+def get_fold_params(n_folds: int) -> tuple[int, int, int]:
     try:
         # only return the number of test samples, train/val samples, and bins
         return _FOLD_PARAMS[n_folds - 3][1:]
@@ -56,7 +56,7 @@ def _stratify_array_labels(
     return np.digitize(target_values, bins=edges)
 
 
-def _validate_total_samples(total: int, expected: int, train_val: bool) -> None:
+def validate_total_samples(total: int, expected: int, train_val: bool) -> None:
     """
     Validates the total number of samples against the expected number.
 
@@ -110,12 +110,12 @@ def get_stratified_array_train_test_split(  # noqa: WPS210
     Returns:
         tuple[np.ndarray, np.ndarray]: Train and test/validation indices.
     """
-    n_test, n_trainval, n_bins = _get_fold_params(n_folds)
+    n_test, n_trainval, n_bins = get_fold_params(n_folds)
     total = feature_data.shape[0]
 
     # validate total samples
     expected = n_trainval if train_val else n_trainval + n_test
-    _validate_total_samples(total, expected, train_val)
+    validate_total_samples(total, expected, train_val)
 
     # stratify labels
     labels = _stratify_array_labels(target_data, n_bins, non_parametric)
@@ -147,7 +147,7 @@ def get_pseudo_classes(
         np.ndarray: Array of pseudo-classes.
     """
     # number of stratification bins equals per-fold setting
-    _, _, n_bins = _get_fold_params(n_folds)
+    _, _, n_bins = get_fold_params(n_folds)
     labels = _stratify_array_labels(target_data, n_bins, non_parametric)
     # zero-based classes
     return labels - 1

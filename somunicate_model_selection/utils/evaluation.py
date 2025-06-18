@@ -5,10 +5,10 @@ from typing import Literal
 import pandas as pd
 
 from utils.dataframe import (
-    _append_best_model,
-    _create_new_row,
-    _filter_dataframe,
-    _get_hparam_columns,
+    append_best_model,
+    create_new_row,
+    filter_dataframe,
+    get_hparam_columns,
 )
 
 VAL_LOSS_MEAN = "val_loss_mean"
@@ -36,9 +36,9 @@ def average_over_hparam_combinations(  # noqa: WPS210
     averaged_data = []
     for combination in hyperparam_combinations:
         hyperparam = dict(zip(hyperparam_dict.keys(), combination, strict=False))
-        filtered_df = _filter_dataframe(df, hyperparam)
-        hparam_columns = _get_hparam_columns(mode)
-        new_row = _create_new_row(filtered_df, hparam_columns)
+        filtered_df = filter_dataframe(df, hyperparam)
+        hparam_columns = get_hparam_columns(mode)
+        new_row = create_new_row(filtered_df, hparam_columns)
         averaged_data.append(new_row)
 
     average_df = pd.DataFrame(averaged_data)
@@ -78,7 +78,7 @@ def save_best_hparams_df(file_name: str, best_model: pd.DataFrame) -> None:
     """
     if os.path.exists(file_name):
         best_df = pd.read_json(file_name, orient="records")
-        best_df = _append_best_model(best_df, best_model)
+        best_df = append_best_model(best_df, best_model)
     else:
         best_df = pd.DataFrame(columns=best_model.columns)
         best_df.loc[0] = list(best_model.iloc[0])

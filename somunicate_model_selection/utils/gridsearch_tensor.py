@@ -5,7 +5,7 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from torch.utils.data import TensorDataset
 
-from utils.gridsearch import _get_fold_params, _validate_total_samples
+from utils.gridsearch import get_fold_params, validate_total_samples
 
 
 def _compute_tensor_bin_edges(
@@ -51,12 +51,12 @@ def get_stratified_train_test_split(  # noqa: WPS210
     train_val: bool = False,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """Splits a TensorDataset into stratified train/test or train/val indices."""
-    n_test, n_trainval, n_bins = _get_fold_params(n_folds)
+    n_test, n_trainval, n_bins = get_fold_params(n_folds)
     total = len(dataset)
 
     # validate total samples
     expected = n_trainval if train_val else n_trainval + n_test
-    _validate_total_samples(total, expected, train_val)
+    validate_total_samples(total, expected, train_val)
 
     # stratify labels
     target_tensor = dataset.tensors[1]
