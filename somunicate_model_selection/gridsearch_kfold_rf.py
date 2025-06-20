@@ -8,12 +8,14 @@ from typing import Any
 
 import numpy as np
 import pandas as pd
+from numpy.typing import NDArray
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import make_scorer, mean_squared_error
 from sklearn.model_selection import StratifiedKFold
 from utils.gridsearch import get_pseudo_classes, get_stratified_array_train_test_split
 from utils.loading import load_global_variables
 
+# RMSE loss function in this throws a warning
 warnings.filterwarnings("ignore")
 
 DIMENSIONS = "dimensions"
@@ -99,7 +101,7 @@ def prepare_target_data(
     subset: str,
     target_index: int,
     global_variables: dict,
-) -> tuple[str, np.ndarray]:
+) -> tuple[str, NDArray[np.float32]]:
     """Prepare target data based on the subset.
 
     Args:
@@ -109,7 +111,7 @@ def prepare_target_data(
         global_variables (dict): Global variables.
 
     Returns:
-        tuple[str, np.ndarray]: Target name and target data array.
+        tuple[str, NDArray[np.float32]]: Target name and target data array.
     """
     subset_mapping = {
         DIMENSIONS: global_variables["target_list"],
@@ -132,7 +134,7 @@ def prepare_target_data(
 
 def prepare_feature_data(
     data_df: pd.DataFrame, global_variables: dict, include_industry: str
-) -> np.ndarray:
+) -> NDArray[np.float32]:
     """Prepare feature data.
 
     Args:
@@ -141,7 +143,7 @@ def prepare_feature_data(
         include_industry (str): Whether to include industry features.
 
     Returns:
-        np.ndarray: Feature data array.
+        NDArray[np.float32]: Feature data array.
     """
     feature_df = data_df.drop(columns=global_variables["target_list"]).drop(
         columns=["sound"]
@@ -153,8 +155,8 @@ def prepare_feature_data(
 
 
 def perform_gridsearch(  # noqa: WPS210
-    feature_data: np.ndarray,
-    target_data: np.ndarray,
+    feature_data: NDArray[np.float32],
+    target_data: NDArray[np.float32],
     target_name: str,
     hyperparam_dict: dict,
     folds: int,
@@ -163,8 +165,8 @@ def perform_gridsearch(  # noqa: WPS210
     """Perform gridsearch with k-fold cross-validation.
 
     Args:
-        feature_data (np.ndarray): Feature data array.
-        target_data (np.ndarray): Target data array.
+        feature_data (NDArray[np.float32]): Feature data array.
+        target_data (NDArray[np.float32]): Target data array.
         target_name (str): Name of the target.
         hyperparam_dict (dict): Hyperparameter dictionary.
         folds (int): Number of folds for k-fold cross-validation.

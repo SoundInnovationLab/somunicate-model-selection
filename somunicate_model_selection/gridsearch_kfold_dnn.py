@@ -25,6 +25,8 @@ from utils.gridsearch import (
 from utils.gridsearch_tensor import get_stratified_train_test_split
 from utils.loading import load_global_variables
 
+# for gridsearch and model selection medium precision is sufficient
+# this is a trade-off between performance and training time
 torch.set_float32_matmul_precision("medium")
 
 # setup logging

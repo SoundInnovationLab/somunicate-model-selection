@@ -7,7 +7,7 @@ VAL_LOSS_MEAN = "val_loss_mean"
 VAL_R2_MEAN = "val_r2_mean"
 
 
-def _append_best_model(best_df: pd.DataFrame, best_model: pd.DataFrame) -> pd.DataFrame:
+def append_best_model(best_df: pd.DataFrame, best_model: pd.DataFrame) -> pd.DataFrame:
     """
     Appends the best model to the existing DataFrame.
 
@@ -23,7 +23,7 @@ def _append_best_model(best_df: pd.DataFrame, best_model: pd.DataFrame) -> pd.Da
     return pd.concat([best_df, new_row], ignore_index=True)
 
 
-def _filter_dataframe(df: pd.DataFrame, hyperparam: dict[str, Any]) -> pd.DataFrame:
+def filter_dataframe(df: pd.DataFrame, hyperparam: dict[str, Any]) -> pd.DataFrame:
     """
     Filters the DataFrame based on hyperparameter values.
 
@@ -63,7 +63,7 @@ def _apply_filter(df: pd.DataFrame, key: str, hparam_value: Any) -> pd.DataFrame
         return df[df[key] == hparam_value]
 
 
-def _get_hparam_columns(mode: str) -> list[str]:
+def get_hparam_columns(mode: str) -> list[str]:
     """
     Returns a list of hyperparameter column names based on the mode.
 
@@ -96,7 +96,7 @@ def _get_hparam_columns(mode: str) -> list[str]:
         raise ValueError(f"Unknown mode: {mode}")
 
 
-def _create_new_row(filtered_df: pd.DataFrame, hparam_columns: list[str]) -> pd.Series:
+def create_new_row(filtered_df: pd.DataFrame, hparam_columns: list[str]) -> pd.Series:
     """
     Creates a new row with hyperparameter values and mean loss/r2.
 

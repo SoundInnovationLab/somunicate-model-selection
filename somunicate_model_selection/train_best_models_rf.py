@@ -5,6 +5,7 @@ import os
 import joblib
 import numpy as np
 import pandas as pd
+from numpy.typing import NDArray
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import make_scorer, mean_squared_error
 from utils.gridsearch import get_stratified_array_train_test_split
@@ -93,7 +94,7 @@ def load_hyperparameters(hparam_file: str) -> dict:
 
 def prepare_target_data(
     data_df: pd.DataFrame, hyperparams: dict, global_variables: dict
-) -> tuple[str, np.ndarray]:
+) -> tuple[str, NDArray[np.float32]]:
     """Prepare target data based on hyperparameters.
 
     Args:
@@ -102,7 +103,7 @@ def prepare_target_data(
         global_variables (dict): Global variables.
 
     Returns:
-        tuple[str, np.ndarray]: Target name and target data array.
+        tuple[str, NDArray[np.float32]]: Target name and target data array.
     """
     subset = (
         DIMENSIONS
@@ -131,7 +132,7 @@ def prepare_target_data(
 
 def prepare_feature_data(
     data_df: pd.DataFrame, global_variables: dict, include_industry: str
-) -> np.ndarray:
+) -> NDArray[np.float32]:
     """Prepare feature data.
 
     Args:
@@ -140,7 +141,7 @@ def prepare_feature_data(
         include_industry (str): Whether to include industry features.
 
     Returns:
-        np.ndarray: Feature data array.
+        NDArray[np.float32]: Feature data array.
     """
     feature_df = data_df.drop(columns=global_variables[TARGET_LIST]).drop(
         columns=["sound"]
@@ -152,10 +153,10 @@ def prepare_feature_data(
 
 
 def train_and_evaluate_model(
-    train_features: np.ndarray,
-    train_targets: np.ndarray,
-    test_features: np.ndarray,
-    test_targets: np.ndarray,
+    train_features: NDArray[np.float32],
+    train_targets: NDArray[np.float32],
+    test_features: NDArray[np.float32],
+    test_targets: NDArray[np.float32],
     hyperparams: dict,
     result_folder: str,
     e_idx: int,
@@ -164,10 +165,10 @@ def train_and_evaluate_model(
     """Train and evaluate the Random Forest model.
 
     Args:
-        train_features (np.ndarray): Training feature data.
-        train_targets (np.ndarray): Training target data.
-        test_features (np.ndarray): Test feature data.
-        test_targets (np.ndarray): Test target data.
+        train_features (NDArray[np.float32]): Training feature data.
+        train_targets (NDArray[np.float32]): Training target data.
+        test_features (NDArray[np.float32]): Test feature data.
+        test_targets (NDArray[np.float32]): Test target data.
         hyperparams (dict): Dictionary of hyperparameters.
         target_name (str): Name of the target.
         result_folder (str): Folder to save results.
