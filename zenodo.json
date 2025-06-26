@@ -1,0 +1,18 @@
+{
+  "creators": [
+    {
+      "affiliation": "Technische Universit\u00e4t Berlin",
+      "name": "Frommholz, Annika"
+    }
+  ],
+  "description": "Model selection for a regression model predicting perceived semantic expression from audio topics.",
+  "keywords": [
+    "model selection",
+    "python",
+    "grid search",
+    "cross-validation"
+  ],
+  "license": {
+    "id": "MIT"
+  }
+}
