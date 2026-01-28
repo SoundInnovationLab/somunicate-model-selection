@@ -200,7 +200,7 @@ def main() -> None:  # noqa: WPS210
     """Main function to train the best Random Forest model."""
     args = parser.parse_args()
     hyperparams = load_hyperparameters(args.hparam_file)
-    data_df = pd.read_json("data/dummy_audio_dataset.json", orient=ORIENT_RECORDS)
+    data_df = pd.read_csv("./data/predictor_data.csv")
     global_variables = load_global_variables()
 
     target_name, target_data = prepare_target_data(

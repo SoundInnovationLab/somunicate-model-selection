@@ -109,7 +109,7 @@ def load_data() -> tuple[Any, Any]:
         tuple[Any, Any]: Dataframe containing the dataset and global variables.
     """
     logger.info("Loading data...")
-    data_df = pd.read_json("./data/dummy_audio_dataset.json", orient="records")
+    data_df = pd.read_csv("./data/predictor_data.csv")
     global_variables = load_global_variables()
     return data_df, global_variables
 
